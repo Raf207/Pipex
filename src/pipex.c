@@ -6,7 +6,7 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:01:28 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/01/18 17:52:02 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/01/20 22:00:18 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	ft_openfile(char *file, int i)
 	if (i == 0)
 		fd = open(file, O_RDONLY, 0777);
 	else
-		fd = open(file, O_WRONLY | O_CREAT | O_TRUNC | O_DIRECTORY, 0777);
+		fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (fd == -1)
 	{
 		ft_putstr_fd("pipex: ", 2);

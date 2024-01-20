@@ -30,7 +30,6 @@ all : $(NAME)
 
 $(OBJ_DIR)%.o : $(SRC_DIR)%.c
 	@mkdir -p $(OBJ_DIR)
-	@echo "Compiling: $<"
 	@$(CC) $(CFLAGS) -I $(HEAD) -c $< -o $@
 
 $(NAME)	: $(OBJ)
