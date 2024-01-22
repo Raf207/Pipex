@@ -6,7 +6,7 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/20 19:40:03 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/01/20 21:54:55 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/01/22 13:33:54 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,15 +87,18 @@ int	main(int argc, char **argv, char **envp)
 	int	i;
 
 	if (argc < 5)
-	{
-		ft_putendl_fd("./pipex file1 cmd1 cmd2 file2", 2);
-		exit(EXIT_FAILURE);
-	}
+		ft_errors(0);
 	if (pipe(p_fd) == -1)
 		exit(EXIT_FAILURE);
 	id = fork();
 	if (id == -1)
 		exit(EXIT_FAILURE);
+	if (ft_strncmp(argv[1], "here_doc", 9) == 0)
+	{
+		if (argc < 6)
+			ft_errors(1);
+		ft_heredoc();
+	}
 	if (id == 0)
 	{
 		ft_firstcmd(p_fd, argv, envp);

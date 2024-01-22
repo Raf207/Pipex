@@ -6,12 +6,26 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/20 19:40:01 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/01/20 19:40:31 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/01/22 16:43:17 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 #include "../libft/include/libft.h"
+
+void	ft_errors(int i)
+{
+	if (i == 0)
+	{
+		ft_putendl_fd("./pipex file1 cmd1 cmd2 file2", 2);
+		exit(EXIT_FAILURE);
+	}
+	else if (i == 1)
+	{
+		ft_putendl_fd("./pipex here_doc LIMITER cmd1 cmd2 file", 2);
+		exit(EXIT_FAILURE);
+	}
+}
 
 void	ft_free(char **tab)
 {
@@ -48,4 +62,33 @@ void	ft_execution(char *cmd, char **envp)
 	ft_free(all_paths);
 	free(path_envp);
 	exit(EXIT_FAILURE);
+}
+
+void	ft_heredoc(int pipe[2], char **av, char **env, int ac)
+{
+	int		file;
+	char	*line;
+
+	file = ft_openfile(av[1], 0);
+	line = get_next_line(file);
+	close(pipe[0]);
+	while (line && !ft_strstr(line, av[2]))
+	{
+		if (write(pipe[1], line, ft_strlen(line)) == -1)
+		{
+			free(line);
+			exit(EXIT_FAILURE);
+		}
+		free(line);
+		line = get_next_line(file);
+	}
+	if (line && ft_strstr(line, av[2]))
+	{
+		if (write(pipe[1], line, ft_strlen(line)
+				- ft_strlen(ft_strstr(line, av[2]))) == -1)
+		{
+			free(line);
+			exit(EXIT_FAILURE);
+		}
+	}
 }
