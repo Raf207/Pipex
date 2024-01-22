@@ -6,7 +6,7 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 15:18:38 by rafnasci          #+#    #+#             */
-/*   Updated: 2023/11/24 14:28:21 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/01/22 11:57:21 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int	ft_createlist(t_gnllist **list, int fd)
 		if (!buffer)
 			return (ft_cleanlist(list, NULL), 1);
 		counter = read(fd, buffer, BUFFER_SIZE);
-		if (counter == 0)
+		if (counter == 0 || counter == -1)
 			return (free(buffer), 0);
 		buffer[counter] = '\0';
 		ft_addlist(list, buffer);
