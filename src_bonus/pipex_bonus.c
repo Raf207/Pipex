@@ -6,11 +6,11 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/20 19:40:03 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/01/22 13:33:54 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/01/26 16:26:47 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/pipex.h"
+#include "../include/pipex_bonus.h"
 #include "../libft/include/libft.h"
 
 int	ft_openfile(char *file, int i)
@@ -20,7 +20,7 @@ int	ft_openfile(char *file, int i)
 	if (i == 0)
 		fd = open(file, O_RDONLY, 0777);
 	else
-		fd = open(file, O_WRONLY | O_CREAT | O_TRUNC | O_DIRECTORY, 0777);
+		fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (fd == -1)
 	{
 		ft_putstr_fd("pipex: ", 2);
@@ -46,20 +46,19 @@ void	ft_lastcmd(int pipe[2], char **argv, char **envp, int argc)
 {
 	int	file;
 
-	file = ft_openfile(argv[4], 1);
+	file = ft_openfile(argv[argc - 1], 1);
 	dup2(file, STDOUT_FILENO);
 	dup2(pipe[0], STDIN_FILENO);
 	close(pipe[1]);
 	ft_execution(argv[argc - 2], envp);
 }
 
-void	ft_cmdloop(int pipe[2], char **argv, char **envp, int argc)
+void	ft_cmdloop(int pipe[2], char **argv, char **envp, int cmd_nb)
 {
-	int	cmd_nb;
 	int	id;
 
-	cmd_nb = 3;
-	while (cmd_nb < argc - 1)
+	dup2(pipe[0], STDIN_FILENO);
+	while (argv[cmd_nb + 2])
 	{
 		id = fork();
 		if (id == -1)
@@ -82,27 +81,22 @@ void	ft_cmdloop(int pipe[2], char **argv, char **envp, int argc)
 int	main(int argc, char **argv, char **envp)
 {
 	int	p_fd[2];
-	int	id;
-	int	cmd_nb;
-	int	i;
 
 	if (argc < 5)
 		ft_errors(0);
 	if (pipe(p_fd) == -1)
 		exit(EXIT_FAILURE);
-	id = fork();
-	if (id == -1)
-		exit(EXIT_FAILURE);
 	if (ft_strncmp(argv[1], "here_doc", 9) == 0)
 	{
 		if (argc < 6)
 			ft_errors(1);
-		ft_heredoc();
+		ft_heredoc(p_fd, argv);
+		ft_cmdloop(p_fd, argv, envp, 3);
 	}
-	if (id == 0)
+	else
 	{
-		ft_firstcmd(p_fd, argv, envp);
-		ft_cmdloop(p_fd, argv, envp, argc);
+		dup2(ft_openfile(argv[1], 0), STDIN_FILENO);
+		ft_cmdloop(p_fd, argv, envp, 2);
 	}
 	ft_lastcmd(p_fd, argv, envp, argc);
 }

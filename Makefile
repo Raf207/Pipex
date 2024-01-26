@@ -8,8 +8,6 @@ CC = gcc
 
 CFLAGS = -Wall -Wextra -Werror
 
-MINIFLAGS = -lmlx -framework OpenGL -framework AppKit
-
 AR = ar -rcs
 
 RM = rm -rf
@@ -24,12 +22,20 @@ OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(SRC_FILES)))
 
 SRC = $(addprefix $(SRC_DIR), $(addsuffix .c, $(SRC_FILES)))
 
+BONUS_SRC_DIR = src_bonus/
+
+BONUS_SRC_FILES = pipex_bonus pipex_utils_bonus
+
+BONUS_OBJ = $(addprefix $(OBJ_DIR), $(addsuffix .o, $(BONUS_SRC_FILES)))
+
+BONUS_SRC = $(addprefix $(BONUS_SRC_DIR), $(addsuffix .c, $(BONUS_SRC_FILES)))
+
 HEAD = ./include/
 
 all : $(NAME)
 
 $(NAME) : $(LIBNAME)
-	$(CC) $(CFLAGS) $(MINIFLAGS) $(LIBNAME) -o $(NAME)
+	$(CC) $(CFLAGS) $(LIBNAME) -o $(NAME)
 
 $(OBJ_DIR)%.o : $(SRC_DIR)%.c
 	@mkdir -p $(OBJ_DIR)
@@ -41,8 +47,22 @@ $(LIBNAME)	: $(OBJ)
 	@cp libft/libft.a .
 	@rm libft/libft.a
 	@mv libft.a $(LIBNAME)
-	@$(AR) $(LIBNAME) $(OBJ)
-	@echo "so_long compiled!"
+	$(AR) $(LIBNAME) $(OBJ)
+	@echo "pipex compiled!"
+
+bonus : $(BONUS_OBJ)
+	@make -C $(LIBFT)
+	@cp libft/libft.a .
+	@rm libft/libft.a
+	@mv libft.a $(LIBNAME)
+	@$(AR) $(LIBNAME) $(BONUS_OBJ)
+	@echo "pipex compiled!"
+	$(CC) $(CFLAGS) $(LIBNAME) -o $(NAME)
+
+$(OBJ_DIR)%.o : $(BONUS_SRC_DIR)%.c
+	@mkdir -p $(OBJ_DIR)
+	@echo "Compiling bonus: $<"
+	@$(CC) $(CFLAGS) -I $(HEAD) -c $< -o $@
 
 clean :
 	$(RM) $(OBJ_DIR)

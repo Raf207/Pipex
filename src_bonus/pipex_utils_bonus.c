@@ -6,11 +6,11 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/20 19:40:01 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/01/22 16:43:17 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/01/26 15:43:35 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/pipex.h"
+#include "../include/pipex_bonus.h"
 #include "../libft/include/libft.h"
 
 void	ft_errors(int i)
@@ -53,7 +53,10 @@ void	ft_execution(char *cmd, char **envp)
 	{
 		path = ft_strjoin(ft_strjoin(all_paths[i], "/"), split_cmd[0]);
 		if (access(path, F_OK | X_OK) == 0)
+		{
+			printf("COMMANDE %s EXECUTEE !!!!\n", split_cmd[0]);
 			execve(path, split_cmd, envp);
+		}
 		free(path);
 	}
 	ft_putstr_fd("pipex: command not found: ", 2);
@@ -64,31 +67,39 @@ void	ft_execution(char *cmd, char **envp)
 	exit(EXIT_FAILURE);
 }
 
-void	ft_heredoc(int pipe[2], char **av, char **env, int ac)
+void	ft_heredoc(int pipe[2], char **av)
 {
-	int		file;
+	int		id;
+
+	id = fork();
+	if (!id)
+		ft_heredoc_input(pipe, av);
+	else
+	{
+		close(pipe[1]);
+		dup2(pipe[0], STDIN_FILENO);
+		wait(NULL);
+	}
+}
+
+void	ft_heredoc_input(int pipe[2], char **av)
+{
 	char	*line;
 
-	file = ft_openfile(av[1], 0);
-	line = get_next_line(file);
 	close(pipe[0]);
-	while (line && !ft_strstr(line, av[2]))
+	while (1)
 	{
+		line = get_next_line(0);
+		if (ft_strncmp(line, av[2], ft_strlen(av[2])) == 0)
+		{
+			free(line);
+			break ;
+		}
 		if (write(pipe[1], line, ft_strlen(line)) == -1)
 		{
 			free(line);
 			exit(EXIT_FAILURE);
 		}
 		free(line);
-		line = get_next_line(file);
-	}
-	if (line && ft_strstr(line, av[2]))
-	{
-		if (write(pipe[1], line, ft_strlen(line)
-				- ft_strlen(ft_strstr(line, av[2]))) == -1)
-		{
-			free(line);
-			exit(EXIT_FAILURE);
-		}
 	}
 }
