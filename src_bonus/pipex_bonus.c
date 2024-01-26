@@ -6,7 +6,7 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/20 19:40:03 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/01/26 16:26:47 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/01/26 16:58:30 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ void	ft_cmdloop(int pipe[2], char **argv, char **envp, int cmd_nb)
 {
 	int	id;
 
-	dup2(pipe[0], STDIN_FILENO);
 	while (argv[cmd_nb + 2])
 	{
 		id = fork();

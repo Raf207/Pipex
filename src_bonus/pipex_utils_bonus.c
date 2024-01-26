@@ -6,7 +6,7 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/20 19:40:01 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/01/26 15:43:35 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/01/26 16:55:36 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,14 @@ void	ft_heredoc_input(int pipe[2], char **av)
 		if (ft_strncmp(line, av[2], ft_strlen(av[2])) == 0)
 		{
 			free(line);
-			break ;
+			exit(0);
 		}
 		if (write(pipe[1], line, ft_strlen(line)) == -1)
+		{
+			free(line);
+			exit(EXIT_FAILURE);
+		}
+		if (write(pipe[1], "\n", 1) == -1)
 		{
 			free(line);
 			exit(EXIT_FAILURE);
