@@ -6,12 +6,11 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 17:13:57 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/01/22 12:06:42 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/01/31 12:55:06 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
-#include "../libft/include/libft.h"
 
 void	ft_free(char **tab)
 {
@@ -32,7 +31,7 @@ void	ft_execution(char *cmd, char **envp)
 	char	*path;
 
 	split_cmd = ft_split(cmd, ' ');
-	path_envp = ft_substr(envp[4], 5, 4654654);
+	path_envp = ft_substr(envp[2], 5, 4654654);
 	all_paths = ft_split(path_envp, ':');
 	i = -1;
 	while (all_paths[++i])

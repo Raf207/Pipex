@@ -6,12 +6,11 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:01:28 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/01/20 22:00:18 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/01/31 13:11:53 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
-#include "../libft/include/libft.h"
 
 int	ft_openfile(char *file, int i)
 {

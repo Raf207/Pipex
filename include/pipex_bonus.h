@@ -6,13 +6,14 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/20 19:40:52 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/01/26 15:24:28 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/01/31 13:02:00 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_BONUS_H
 # define PIPEX_BONUS_H
 
+# include "../libft/include/libft.h"
 # include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -20,9 +21,8 @@
 # include <fcntl.h>
 
 int		main(int argc, char **argv, char **envp);
-void	ft_lastcmd(int pipe[2], char **argv, char **envp, int argc);
-void	ft_cmdloop(int pipe[2], char **argv, char **envp, int argc);
-void	ft_firstcmd(int pipe[2], char **argv, char **envp);
+void	ft_lastcmd(char **argv, char **envp, int argc);
+void	ft_cmdloop(char **argv, char **envp, int argc);
 void	ft_execution(char *cmd, char **envp);
 void	ft_free(char **tab);
 int		ft_openfile(char *file, int i);

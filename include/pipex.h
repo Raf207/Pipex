@@ -6,7 +6,7 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 12:20:23 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/01/18 17:24:51 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/01/31 12:55:35 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <sys/wait.h>
 # include <fcntl.h>
+# include "../libft/include/libft.h"
 
 int		main(int argc, char **argv, char **envp);
 void	ft_secondcmd(int pipe[2], char **argv, char **envp);

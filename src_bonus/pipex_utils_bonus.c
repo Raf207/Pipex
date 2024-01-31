@@ -6,12 +6,11 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/20 19:40:01 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/01/26 16:55:36 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/01/31 12:52:51 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex_bonus.h"
-#include "../libft/include/libft.h"
 
 void	ft_errors(int i)
 {
@@ -46,17 +45,14 @@ void	ft_execution(char *cmd, char **envp)
 	char	*path;
 
 	split_cmd = ft_split(cmd, ' ');
-	path_envp = ft_substr(envp[4], 5, 4654654);
+	path_envp = ft_substr(envp[2], 5, 4654654);
 	all_paths = ft_split(path_envp, ':');
 	i = -1;
 	while (all_paths[++i])
 	{
 		path = ft_strjoin(ft_strjoin(all_paths[i], "/"), split_cmd[0]);
 		if (access(path, F_OK | X_OK) == 0)
-		{
-			printf("COMMANDE %s EXECUTEE !!!!\n", split_cmd[0]);
 			execve(path, split_cmd, envp);
-		}
 		free(path);
 	}
 	ft_putstr_fd("pipex: command not found: ", 2);
@@ -89,11 +85,12 @@ void	ft_heredoc_input(int pipe[2], char **av)
 	close(pipe[0]);
 	while (1)
 	{
+		ft_putstr_fd("pipe heredoc> ", 0);
 		line = get_next_line(0);
 		if (ft_strncmp(line, av[2], ft_strlen(av[2])) == 0)
 		{
 			free(line);
-			exit(0);
+			exit(EXIT_FAILURE);
 		}
 		if (write(pipe[1], line, ft_strlen(line)) == -1)
 		{
