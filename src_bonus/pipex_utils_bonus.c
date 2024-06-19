@@ -6,7 +6,7 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/20 19:40:01 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/06/19 16:12:44 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/06/19 21:17:29 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@ void	ft_errors(int i)
 {
 	if (i == 0)
 	{
-		ft_putendl_fd("./pipex file1 cmd1 cmd2 file2", 2);
+		ft_putendl_fd("./pipex_bonus file1 cmd1 cmd2 file2", 2);
 		exit(EXIT_FAILURE);
 	}
 	else if (i == 1)
 	{
-		ft_putendl_fd("./pipex here_doc LIMITER cmd1 cmd2 file", 2);
+		ft_putendl_fd("./pipex_bonus here_doc LIMITER cmd1 cmd2 file", 2);
 		exit(EXIT_FAILURE);
 	}
 }
@@ -70,6 +70,8 @@ void	ft_heredoc(int pipe[2], char **av)
 	int		id;
 
 	id = fork();
+	if (id == -1)
+		exit(EXIT_FAILURE);
 	if (!id)
 		ft_heredoc_input(pipe, av);
 	else
@@ -77,6 +79,7 @@ void	ft_heredoc(int pipe[2], char **av)
 		close(pipe[1]);
 		dup2(pipe[0], STDIN_FILENO);
 		wait(NULL);
+		close(pipe[0]);
 	}
 }
 
@@ -89,21 +92,16 @@ void	ft_heredoc_input(int pipe[2], char **av)
 	{
 		ft_putstr_fd("pipe heredoc> ", 0);
 		line = get_next_line(0);
-		if (ft_strncmp(line, av[2], ft_strlen(av[2]) + 1) == 0)
+		if (!line)
+			exit(EXIT_FAILURE);
+		if ((ft_strncmp(line, av[2], ft_strlen(av[2])) == 0)
+			&& (line[ft_strlen(av[2])] == '\n'))
 		{
 			close(pipe[1]);
 			free(line);
 			exit(EXIT_SUCCESS);
 		}
-		if (write(pipe[1], line, ft_strlen(line)) == -1)
-		{
-			free(line);
-			exit(EXIT_FAILURE);
-		}
-		if (write(pipe[1], "\n", 1) == -1)
-		{
-			free(line);
-			exit(EXIT_FAILURE);
-		}
+		ft_putstr_fd(line, pipe[1]);
+		free(line);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:01:28 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/06/19 16:18:57 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/06/19 18:01:51 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ void	ft_firstcmd(int pipe[2], char **argv, char **envp, int fd)
 	dup2(fd, STDIN_FILENO);
 	dup2(pipe[1], STDOUT_FILENO);
 	close(pipe[0]);
+	close(pipe[1]);
+	close(fd);
 	ft_execution(argv[2], envp);
 }
 
@@ -43,7 +45,15 @@ void	ft_secondcmd(int pipe[2], char **argv, char **envp, int fd)
 	dup2(fd, STDOUT_FILENO);
 	dup2(pipe[0], STDIN_FILENO);
 	close(pipe[1]);
+	close(pipe[0]);
+	close(fd);
 	ft_execution(argv[3], envp);
+}
+
+void	ft_error(char *msg)
+{
+	ft_putendl_fd(msg, 2);
+	exit(EXIT_FAILURE);
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -53,10 +63,7 @@ int	main(int argc, char **argv, char **envp)
 	int	id2;
 
 	if (argc != 5)
-	{
-		ft_putendl_fd("./pipex file1 cmd1 cmd2 file2", 2);
-		exit(EXIT_FAILURE);
-	}
+		ft_error("./pipex file1 cmd1 cmd2 file2");
 	if (pipe(p_fd) == -1)
 		exit(EXIT_FAILURE);
 	id2 = ft_openfile(argv[1], 0);
@@ -70,7 +77,9 @@ int	main(int argc, char **argv, char **envp)
 		exit(EXIT_FAILURE);
 	if (id2 == 0)
 		ft_secondcmd(p_fd, argv, envp, ft_openfile(argv[4], 1));
-	while (wait(NULL) > 0)
+	close(p_fd[0]);
+	close(p_fd[1]);
+	while (!waitpid(id, NULL, 0) || !waitpid(id2, NULL, 0))
 		;
 	return (0);
 }

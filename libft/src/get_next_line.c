@@ -6,103 +6,104 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 15:18:38 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/01/22 11:57:21 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/06/19 19:21:17 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_copyline(char *str, t_gnllist *list)
+char	*fr_free(char *buffer, char *buf)
 {
-	int	i;
-	int	j;
+	char	*temp;
 
-	if (!list)
-		return ;
-	j = 0;
-	while (list)
-	{
-		i = -1;
-		while (list->content[++i])
-		{
-			str[j++] = list->content[i];
-			if (list->content[i] == '\n')
-			{
-				str[--j] = '\0';
-				return ;
-			}
-		}
-		list = list->next;
-	}
-	str[j] = '\0';
+	temp = ft_strjoin(buffer, buf);
+	free(buffer);
+	return (temp);
 }
 
-char	*ft_getline(t_gnllist	*list)
+char	*ft_next(char *buffer)
 {
-	int		len_line;
-	char	*new_line;
+	int		i;
+	int		j;
+	char	*line;
 
-	len_line = ft_countlen(list) - 1;
-	new_line = malloc (sizeof(char) * (len_line + 1));
-	if (!new_line)
+	i = 0;
+	while (buffer[i] && buffer[i] != '\n')
+		i++;
+	if (!buffer[i])
+	{
+		free(buffer);
 		return (NULL);
-	ft_copyline(new_line, list);
-	return (new_line);
-}
-
-int	ft_find_nl(t_gnllist *list)
-{
-	int	i;
-
-	if (!list)
-		return (0);
-	while (list)
-	{
-		i = -1;
-		while (list->content[++i] && i < BUFFER_SIZE)
-			if (list->content[i] == '\n')
-				return (1);
-		list = list->next;
 	}
-	return (0);
+	line = ft_calloc((ft_strlen(buffer) - i + 1), sizeof(char));
+	i++;
+	j = 0;
+	while (buffer[i])
+		line[j++] = buffer[i++];
+	free(buffer);
+	return (line);
 }
 
-int	ft_createlist(t_gnllist **list, int fd)
+char	*ft_line(char *buffer)
+{
+	char	*line;
+	int		i;
+
+	i = 0;
+	if (!buffer[i])
+		return (NULL);
+	while (buffer[i] && buffer[i] != '\n')
+		i++;
+	line = ft_calloc(i + 2, sizeof(char));
+	i = 0;
+	while (buffer[i] && buffer[i] != '\n')
+	{
+		line[i] = buffer[i];
+		i++;
+	}
+	if (buffer[i] && buffer[i] == '\n')
+		line[i++] = '\n';
+	return (line);
+}
+
+char	*read_file(int fd, char *res)
 {
 	char	*buffer;
-	int		counter;
+	int		byte_read;
 
-	while (!ft_find_nl(*list))
+	if (!res)
+		res = ft_calloc(1, 1);
+	buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	byte_read = 1;
+	while (byte_read > 0)
 	{
-		buffer = malloc (sizeof(char) * (BUFFER_SIZE + 1));
-		if (!buffer)
-			return (ft_cleanlist(list, NULL), 1);
-		counter = read(fd, buffer, BUFFER_SIZE);
-		if (counter == 0 || counter == -1)
-			return (free(buffer), 0);
-		buffer[counter] = '\0';
-		ft_addlist(list, buffer);
+		byte_read = read(fd, buffer, BUFFER_SIZE);
+		if (byte_read == -1)
+		{
+			free(buffer);
+			return (NULL);
+		}
+		buffer[byte_read] = 0;
+		res = fr_free(res, buffer);
+		if (ft_strchr(buffer, '\n'))
+			break ;
 	}
-	return (0);
+	free(buffer);
+	return (res);
 }
 
 char	*get_next_line(int fd)
 {
-	static t_gnllist	*list[4096];
-	char				*str;
-	char				*last;
+	static char	*buffer[OPEN_MAX];
+	char		*line;
 
-	if (fd < 0 || fd > 4096 || read(fd, 0, 0) < 0 || BUFFER_SIZE < 0)
-		return (ft_cleanlist(&list[fd], NULL), NULL);
-	ft_createlist(&list[fd], fd);
-	if (ft_createlist(&list[fd], fd) == 1)
+	ft_putstr_fd("> ", 1);
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 		return (NULL);
-	if (!list[fd])
+	buffer[fd] = read_file(fd, buffer[fd]);
+	if (!buffer[fd])
 		return (NULL);
-	str = ft_getline(list[fd]);
-	if (!str)
-		return (ft_cleanlist(&list[fd], NULL), NULL);
-	last = ft_lastpart(list[fd]);
-	ft_cleanlist(&list[fd], last);
-	return (str);
+	line = ft_line(buffer[fd]);
+	buffer[fd] = ft_next(buffer[fd]);
+	return (line);
 }

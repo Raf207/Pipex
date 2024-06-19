@@ -6,7 +6,7 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/20 19:40:03 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/06/17 21:08:51 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/06/19 21:15:06 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ void	ft_cmdloop(char **argv, char **envp, int cmd_nb)
 		{
 			close(p_fd[1]);
 			dup2(p_fd[0], STDIN_FILENO);
+			wait(NULL);
 		}
 		++cmd_nb;
 	}
