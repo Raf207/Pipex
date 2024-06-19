@@ -6,7 +6,7 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:01:28 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/06/19 16:10:34 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/06/19 16:18:57 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	int	p_fd[2];
 	int	id;
-	int id2;
+	int	id2;
 
 	if (argc != 5)
 	{
