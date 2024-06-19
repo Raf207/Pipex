@@ -6,7 +6,7 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 17:13:57 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/01/31 12:55:06 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/06/17 16:46:37 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,15 @@ void	ft_execution(char *cmd, char **envp)
 	char	*path;
 
 	split_cmd = ft_split(cmd, ' ');
-	path_envp = ft_substr(envp[2], 5, 4654654);
+	if (access(split_cmd[0], X_OK) == 0)
+		execve(split_cmd[0], split_cmd, envp);
+	path_envp = ft_substr(envp[4], 5, 4654654);
 	all_paths = ft_split(path_envp, ':');
 	i = -1;
 	while (all_paths[++i])
 	{
 		path = ft_strjoin(ft_strjoin(all_paths[i], "/"), split_cmd[0]);
-		if (access(path, F_OK | X_OK) == 0)
+		if (access(path, X_OK) == 0)
 			execve(path, split_cmd, envp);
 		free(path);
 	}

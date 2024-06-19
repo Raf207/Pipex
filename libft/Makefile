@@ -34,7 +34,6 @@ $(OBJ_DIR)%.o : $(SRC_DIR)%.c
 
 $(NAME)	: $(OBJ)
 	@$(AR) $(NAME) $(OBJ)
-	@echo "Libft compiled!"
 
 clean :
 	$(RM) $(OBJ_DIR)

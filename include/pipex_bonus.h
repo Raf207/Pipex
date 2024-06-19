@@ -6,7 +6,7 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/20 19:40:52 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/01/31 13:02:00 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/06/17 21:09:03 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 # include <fcntl.h>
 
 int		main(int argc, char **argv, char **envp);
-void	ft_lastcmd(char **argv, char **envp, int argc);
+void	ft_lastcmd(char **argv, char **envp, int argc, int fd);
 void	ft_cmdloop(char **argv, char **envp, int argc);
 void	ft_execution(char *cmd, char **envp);
 void	ft_free(char **tab);

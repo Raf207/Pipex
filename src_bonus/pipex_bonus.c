@@ -6,7 +6,7 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/20 19:40:03 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/01/31 13:12:41 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/06/17 21:08:51 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,10 @@ int	ft_openfile(char *file, int i)
 
 	if (i == 0)
 		fd = open(file, O_RDONLY, 0777);
+	else if (i == 1)
+		fd = open(file, O_WRONLY | O_TRUNC | O_CREAT, 0777);
 	else
-		fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+		fd = open(file, O_WRONLY | O_APPEND | O_CREAT, 0777);
 	if (fd == -1)
 	{
 		ft_putstr_fd("pipex: ", 2);
@@ -31,12 +33,9 @@ int	ft_openfile(char *file, int i)
 	return (fd);
 }
 
-void	ft_lastcmd(char **argv, char **envp, int argc)
+void	ft_lastcmd(char **argv, char **envp, int argc, int fd)
 {
-	int	file;
-
-	file = ft_openfile(argv[argc - 1], 1);
-	dup2(file, STDOUT_FILENO);
+	dup2(fd, STDOUT_FILENO);
 	ft_execution(argv[argc - 2], envp);
 }
 
@@ -58,8 +57,11 @@ void	ft_cmdloop(char **argv, char **envp, int cmd_nb)
 			dup2(p_fd[1], STDOUT_FILENO);
 			ft_execution(argv[cmd_nb], envp);
 		}
-		close(p_fd[1]);
-		dup2(p_fd[0], STDIN_FILENO);
+		else
+		{
+			close(p_fd[1]);
+			dup2(p_fd[0], STDIN_FILENO);
+		}
 		++cmd_nb;
 	}
 }
@@ -67,6 +69,7 @@ void	ft_cmdloop(char **argv, char **envp, int cmd_nb)
 int	main(int argc, char **argv, char **envp)
 {
 	int	p_fd[2];
+	int	fd1;
 
 	if (argc < 5)
 		ft_errors(0);
@@ -78,11 +81,13 @@ int	main(int argc, char **argv, char **envp)
 			ft_errors(1);
 		ft_heredoc(p_fd, argv);
 		ft_cmdloop(argv, envp, 3);
+		ft_lastcmd(argv, envp, argc, ft_openfile(argv[argc - 1], 2));
 	}
 	else
 	{
-		dup2(ft_openfile(argv[1], 0), STDIN_FILENO);
+		fd1 = ft_openfile(argv[1], 0);
+		dup2(fd1, STDIN_FILENO);
 		ft_cmdloop(argv, envp, 2);
+		ft_lastcmd(argv, envp, argc, ft_openfile(argv[argc - 1], 1));
 	}
-	ft_lastcmd(argv, envp, argc);
 }

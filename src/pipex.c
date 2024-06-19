@@ -6,7 +6,7 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:01:28 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/01/31 13:11:53 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/06/19 16:10:34 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,23 +30,17 @@ int	ft_openfile(char *file, int i)
 	return (fd);
 }
 
-void	ft_firstcmd(int pipe[2], char **argv, char **envp)
+void	ft_firstcmd(int pipe[2], char **argv, char **envp, int fd)
 {
-	int	file;
-
-	file = ft_openfile(argv[1], 0);
-	dup2(file, STDIN_FILENO);
+	dup2(fd, STDIN_FILENO);
 	dup2(pipe[1], STDOUT_FILENO);
 	close(pipe[0]);
 	ft_execution(argv[2], envp);
 }
 
-void	ft_secondcmd(int pipe[2], char **argv, char **envp)
+void	ft_secondcmd(int pipe[2], char **argv, char **envp, int fd)
 {
-	int	file;
-
-	file = ft_openfile(argv[4], 1);
-	dup2(file, STDOUT_FILENO);
+	dup2(fd, STDOUT_FILENO);
 	dup2(pipe[0], STDIN_FILENO);
 	close(pipe[1]);
 	ft_execution(argv[3], envp);
@@ -56,6 +50,7 @@ int	main(int argc, char **argv, char **envp)
 {
 	int	p_fd[2];
 	int	id;
+	int id2;
 
 	if (argc != 5)
 	{
@@ -64,10 +59,18 @@ int	main(int argc, char **argv, char **envp)
 	}
 	if (pipe(p_fd) == -1)
 		exit(EXIT_FAILURE);
+	id2 = ft_openfile(argv[1], 0);
 	id = fork();
 	if (id == -1)
 		exit(EXIT_FAILURE);
 	if (id == 0)
-		ft_firstcmd(p_fd, argv, envp);
-	ft_secondcmd(p_fd, argv, envp);
+		ft_firstcmd(p_fd, argv, envp, id2);
+	id2 = fork();
+	if (id2 == -1)
+		exit(EXIT_FAILURE);
+	if (id2 == 0)
+		ft_secondcmd(p_fd, argv, envp, ft_openfile(argv[4], 1));
+	while (wait(NULL) > 0)
+		;
+	return (0);
 }
