@@ -6,7 +6,7 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/20 19:40:52 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/06/19 18:46:40 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/06/22 01:21:33 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,6 @@ int		ft_openfile(char *file, int i);
 void	ft_errors(int i);
 void	ft_heredoc(int pipe[2], char **av);
 void	ft_heredoc_input(int pipe[2], char **av);
+int		ft_findpath(char **envp);
 
 #endif

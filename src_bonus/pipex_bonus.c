@@ -6,12 +6,23 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/20 19:40:03 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/06/19 21:15:06 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/06/22 01:21:21 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex_bonus.h"
 #include "../libft/include/libft.h"
+
+int	ft_findpath(char **envp)
+{
+	int	i;
+
+	i = -1;
+	while (envp[++i])
+		if (ft_strncmp("PATH", envp[i], 4) == 0)
+			return (i);
+	return (-1);
+}
 
 int	ft_openfile(char *file, int i)
 {
