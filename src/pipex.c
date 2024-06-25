@@ -6,7 +6,7 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:01:28 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/06/22 01:22:55 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/06/25 20:06:02 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,12 +66,11 @@ int	main(int argc, char **argv, char **envp)
 		ft_error("./pipex file1 cmd1 cmd2 file2");
 	if (pipe(p_fd) == -1)
 		exit(EXIT_FAILURE);
-	id2 = ft_openfile(argv[1], 0);
 	id = fork();
 	if (id == -1)
 		exit(EXIT_FAILURE);
 	if (id == 0)
-		ft_firstcmd(p_fd, argv, envp, id2);
+		ft_firstcmd(p_fd, argv, envp, ft_openfile(argv[1], 0));
 	id2 = fork();
 	if (id2 == -1)
 		exit(EXIT_FAILURE);

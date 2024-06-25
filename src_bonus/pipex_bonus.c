@@ -6,7 +6,7 @@
 /*   By: rafnasci <rafnasci@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/20 19:40:03 by rafnasci          #+#    #+#             */
-/*   Updated: 2024/06/22 01:21:21 by rafnasci         ###   ########.fr       */
+/*   Updated: 2024/06/25 20:07:26 by rafnasci         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ int	ft_openfile(char *file, int i)
 void	ft_lastcmd(char **argv, char **envp, int argc, int fd)
 {
 	dup2(fd, STDOUT_FILENO);
+	close(fd);
 	ft_execution(argv[argc - 2], envp);
 }
 
@@ -66,13 +67,14 @@ void	ft_cmdloop(char **argv, char **envp, int cmd_nb)
 		{
 			close(p_fd[0]);
 			dup2(p_fd[1], STDOUT_FILENO);
+			close(p_fd[1]);
 			ft_execution(argv[cmd_nb], envp);
 		}
 		else
 		{
 			close(p_fd[1]);
 			dup2(p_fd[0], STDIN_FILENO);
-			wait(NULL);
+			close(p_fd[0]);
 		}
 		++cmd_nb;
 	}
